@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Context>
+  <!-- PauseAnim - The amount of time that the list should wait before collapsing. -->
+  <SlideAnim ID="PauseCollapseList" Speed="10" Begin="-10,0" End="0,0" Cycle="Once"/>
+  <!-- PauseAnim - The amount of time that the window should wait before hiding. -->
+  <!-- AZURENCY : same speed and begin that the slideanim of the panel -->
+  <SlideAnim ID="PauseDismissWindow" Speed="3.4" Begin="330,0" End="0,0" Cycle="Once"/>
+
+  <!-- An animated bouncing arrow to point to items in the tutorial's production panel -->
+  <Instance Name="TutorialBouncingArrowH">
+    <SlideAnim Start="0,0" EndOffset="20,0" Cycle="Bounce" Speed="1.2" Function="OutSine" EndPause=".4" Anchor="R,T" AnchorSide="O,I" Size="59,44">
+      <Image Texture="Tutorial_ArrowH" Offset="-58, 5" Size="parent,parent"/>
+    </SlideAnim>
+  </Instance>
+
+  <!-- Queue Window -->
+    <AlphaAnim ID="QueueAlphaIn" Anchor="R,T" Size="350,full" AlphaBegin="0" AlphaEnd="1" Function="OutSine" Speed="3.4" Cycle="Once">
+        <SlideAnim ID="QueueSlideIn" Size="350,full" Begin="265,0" End="0,0" Function="OutSine" Speed="3.4" Cycle="Once">
+            <GridButton ID="QueueWindowToggle" Anchor="L,T" AnchorSide="O,I" Offset="255,90" Size="24,30" Style="RowButton">
+                <Label ID="QueueWindowToggleDirection" Anchor="C,C" Style="FontNormalBold14" Offset="-3,0" String=">" />
+            </GridButton>
+
+            <Grid ID="QueueWindow" Anchor="R,T" AnchorSide="I,I" Offset="350,55" Size="265,parent" Style="WindowFrameHUD">
+                <Container ID="ProductionQueuePanel" Size="parent,parent" ConsumeMouse="1">
+                    <ScrollPanel ID="ProductionQueueListScroll" Vertical="1" Size="parent,parent-24" AutoScrollBar="1" Offset="-8,26">
+                        <Stack ID="ProductionQueueList" StackGrowth="Down" Offset="0,0" />
+                        <ScrollBar ID="ProductionQueueListScrollBar" Anchor="R,T" AnchorSide="O,I" Offset="12,0" Style="ScrollVerticalBar" />
+                    </ScrollPanel>
+                </Container>
+                <Grid Anchor="L,T" Size="parent,18" Offset="-5,0" Style="DivHeader">
+                    <Container Size="parent,18">
+                        <Image Texture="Controls_Gradient_HalfRadial" Size="parent, 24" FlipY="1" Anchor="C,T" Color="72,103,130,255" />
+                    </Container>
+                    <Label Anchor="C,C" Offset="-5,0" Style="CityPanelSubPanelTitle" String="LOC_HUD_CITY_PRODUCTION_QUEUE" />
+                    <GridButton ID="QueueWindowReset" Anchor="L,T" AnchorSide="I,I" Offset="2,2" Size="23,23" Style="RowButton" ToolTip="LOC_LEADER_VIEWER_DEBUG_RESET">
+                        <Label Anchor="C,C" Style="FontNormalBold14" Offset="0,-1" String="x" />
+                    </GridButton>
+                </Grid>
+            </Grid>
+        </SlideAnim>
+    </AlphaAnim>
+    <!-- END Queue Window -->
+
+  <AlphaAnim    ID="AlphaIn"    Anchor="R,T"                    Size="350,full" AlphaBegin="0" AlphaEnd="1" Function="OutSine" Speed="3.4" Cycle="Once" >
+    <SlideAnim  ID="SlideIn"                                    Size="parent,parent" Begin="330,0" End="0,0" Function="OutSine" Speed="3.4" Cycle="Once" >
+      <!--<Grid     ID="DropShadow" Anchor="R,T"  Offset="-50,140"  Size="450,100" Style="DropShadow"   />-->
+      <Grid     ID="Window"     Anchor="R,T"  Offset="0,26"   Size="parent,parent" Style="WindowFillHUD"  >
+        <Image Texture="Controls_GradientSmall" Size="22,parent" AnchorSide="O,I" Anchor="L,T" Color="0,0,0,190" Rotate="90" Offset="-1,0"/>
+
+        <!-- Deco Stripes on the sides of the window -->
+        <Box Color="12,24,38,200" Size="2,parent"  Offset="4,0"/>
+        <Box Color="12,24,38,200" Size="2,parent" Anchor="R,T" Offset="4,0"/>
+
+        <Container ID="ProductionPanel" Size="parent,parent" ConsumeMouse="1">
+          <!-- Filter Subheader - Taking this out for now.  We may want to bring it back, but let's try without it.
+
+          <Grid Offset="0,29" Size="350,26" Texture="Controls_SubHeader.dds" SliceCorner="1,1" SliceTextureSize="22,22">
+            <GridButton     ID="HideDisabled"  Anchor="C,T" Style="CheckBoxControl" Offset="0,2" String="LOC_PRODUCTION_HIDE_NAME" Size="140,24"/>
+          </Grid>-->
+
+          <!-- All Window Content -->
+          <Container        ID="WindowContent"        Offset="0,10" Size="parent,parent">
+            <Container      ID="ChooseProductionMenu" Size="parent,parent" >
+              <!-- Currently Producing Area -->
+              <!-- Before a city has produced anything, this panel will be hidden and the scrollpanel will extend to the top -->
+              <Grid ID="CurrentProductionArea" Anchor="C,T" Offset="-7,22" Size="parent-35,40" Texture="Controls_SubHeader2" SliceCorner="20,1" SliceTextureSize="40,32" Color="255,255,255,150">
+                <Grid Size="parent,parent" Texture="ProductionPanel_QueueButton" SliceCorner="51,30" SliceTextureSize="102,32">
+                  <Container Size="parent-10,parent" Anchor="C,C">
+                    <!-- Progress-->
+                    <Label ID="CurrentProductionName" String="$ITEM BEING PRODUCED$" Style="HeaderSmallCaps" Anchor="C,C"/>
+                    <Image ID="CurrentProductionMeter" Texture="CityPanel_MeterSmallBacking" Size="80,21" Anchor="R,C" Offset="35,0">
+                      <TextureBar ID="CurrentProductionProgress" Texture="CityPanel_ProductionMeterSmall" Size="76,17" Anchor="C,C" Speed="1" Direction="Right" ShadowColor="255,255,255,200"/>
+                      <Label ID="CurrentProductionProgressString" String="[ICON_Production]XX/XXX" Style="WhiteSemiBold14" Color0="172,173,168" Anchor="C,C" Offset="-5,0"/>
+                      <Label ID="CurrentProductionCost" String="XX [ICON_Turn]" Style="WhiteSemiBold14" Anchor="R,C" Offset="-35,0"/>
+                    </Image>
+                  </Container>
+                </Grid>
+              </Grid>
+              <ScrollPanel  ID="ProductionListScroll" Anchor="L,T" Offset="0,60" Vertical="1" Size="parent-16, parent-90" AutoScrollBar="1">
+                <Stack      ID="ProductionList" StackGrowth="Down"  Offset="5,0"/>
+                <ScrollBar        Anchor="R,T" AnchorSide="O,I"  Offset="1,0" Style="ScrollVerticalBar" />
+              </ScrollPanel>
+
+              <Tutorial ID="TutTrainBuilders" Style="TutorialContainer" Anchor="L,T"  AnchorSide="O,I" Offset="10,315" TriggerBy="TutorialTrainBuilders">
+                <Grid Style="TutorialCalloutGrid">
+                  <Label Style="TutorialHeaderText" String="LOC_META_102_HEAD"/>
+                  <Label Style="TutorialBodyText" String="LOC_META_102_BODY" />
+                </Grid>
+                <MakeInstance Name="TutorialBouncingArrowH"/>
+              </Tutorial>
+
+              <Tutorial ID="TutTrainSettlers" Style="TutorialContainer" Anchor="L,T"  AnchorSide="O,I" Offset=" 10,256" TriggerBy="TutorialTrainSettlers">
+                <Grid Style="TutorialCalloutGrid">
+                  <Label Style="TutorialHeaderText" String="LOC_META_41_HEAD"/>
+                  <Label Style="TutorialBodyText" String="LOC_META_41_BODY" />
+                </Grid>
+                <MakeInstance Name="TutorialBouncingArrowH"/>
+              </Tutorial>
+
+              <Tutorial ID="TutTrainSlinger" Style="TutorialContainer" Anchor="L,T"  AnchorSide="O,I" Offset="10,492" TriggerBy="TutorialTrainSlinger">
+                <Grid Style="TutorialCalloutGrid">
+                  <Label Style="TutorialHeaderText" String="LOC_META_45_HEAD"/>
+                  <Label Style="TutorialBodyText" String="LOC_META_45_BODY" />
+                </Grid>
+                <MakeInstance Name="TutorialBouncingArrowH"/>
+              </Tutorial>
+
+              <Tutorial ID="TutBuildMonument" Style="TutorialContainer" Anchor="L,T" AnchorSide="O,I" Offset=" 10, 151" TriggerBy="TutorialBuildMonument">
+                <Grid Style="TutorialCalloutGrid">
+                  <Label Style="TutorialHeaderText"         String="LOC_META_27_HEAD" />
+                  <Label Style="TutorialBodyText" String="LOC_META_27_BODY" />
+                </Grid>
+                <MakeInstance Name="TutorialBouncingArrowH"/>
+              </Tutorial>
+
+              <Tutorial  ID="TutBuildCampus" Style="TutorialContainer"  Anchor="L,T" AnchorSide="O,I" Offset=" 10, 212" TriggerBy="TutorialBuildCampus">
+                <Grid Style="TutorialCalloutGrid">
+                  <Label Style="TutorialHeaderText" String="LOC_META_80_HEAD"/>
+                  <Label Style="TutorialBodyText" String="LOC_META_80_BODY" />
+                </Grid>
+                <MakeInstance Name="TutorialBouncingArrowH"/>
+              </Tutorial>
+
+              <Tutorial  ID="TutBuildLibrary" Style="TutorialContainer" Anchor="L,T" AnchorSide="O,I" Offset=" 10, 256" TriggerBy="TutorialBuildLibrary">
+                <Grid Style="TutorialCalloutGrid">
+                  <Label Style="TutorialHeaderText" String="LOC_META_87_HEAD"/>
+                </Grid>
+                <MakeInstance Name="TutorialBouncingArrowH"/>
+              </Tutorial>
+
+              <Tutorial  ID="TutTrainWarriors" Style="TutorialContainer" Anchor="L,T" AnchorSide="O,I" Offset="10,377" TriggerBy="TutorialTrainWarriors">
+                <Grid Style="TutorialCalloutGrid" >
+                  <Label Style="TutorialHeaderText" String="LOC_META_4a_HEAD" />
+                  <Label Style="TutorialBodyText" String="LOC_META_4a_BODY" />
+                </Grid>
+                <MakeInstance Name="TutorialBouncingArrowH"/>
+              </Tutorial>
+            </Container>
+          </Container>
+
+          <!-- Tab Subheader-->
+
+        </Container>
+
+        <!-- Blue Window Header -->
+        <Grid                                   Anchor="R,T"                  Size="parent+16,59"       Style="HeaderBannerRight" >
+          <Container                            Anchor="L,T"                  Size="parent-20,parent-27" >
+            <Button ID="CQUI_ProductionQueueCheckbox" Offset="0,2" Anchor="L,T" Size="44,44"  Texture="LaunchBar_Hook_ButtonMedium" Style="ButtonNormalText">
+              <Image Offset="0,-1" Texture="Stats32" Size="32,32" Anchor="C,C"  Icon="ICON_QUEUE"/>
+            </Button>
+            <Label            ID="HeaderLabel"  Anchor="C,T"  Offset="10,10"                            Style="BannerHeaderText"  String="LOC_HUD_CHOOSE_PRODUCTION" />
+          </Container>
+          <Image                                Anchor="R,T"                  Size="38,30"              Texture="Controls_CornerDetail.dds" />
+          <Button             ID="CloseButton"  Anchor="R,T"  Offset="-2,-3"                            Style="CloseButtonSmall" />
+        </Grid>
+
+        <Image                                  Anchor="L,B" Size="parent,30" StretchMode="Fill" Color="255,255,255,100"  Texture="Controls_ScrollMaskLower.dds" />
+        <Image                                  Anchor="L,B" Size="parent,11" StretchMode="Fill" AnchorSide="I,O"         Texture="Controls_WoodenRim.dds"       />
+      </Grid>
+    </SlideAnim>
+  </AlphaAnim>
+
+
+  <!-- =========================== Instances ========================== -->
+  <Instance Name="UnnestedList">
+      <Stack ID="Top" StackGrowth="Down">
+          <!-- <Grid Style="Drawer" Size="255,6" Offset="4,-1" /> -->
+          <SlideAnim ID="ListSlide" Speed="3.5" Begin="0,-10" End="0,0" Cycle="Once" Size="400,auto">
+              <AlphaAnim ID="ListAlpha" Speed="4" AlphaBegin="0" AlphaEnd="1" Cycle="Once" Size="default,auto">
+                  <Stack ID="List" StackGrowth="Down" Offset="5,0" Padding="0" />
+              </AlphaAnim>
+          </SlideAnim>
+      </Stack>
+  </Instance>
+
+  <Instance         Name="NestedList">
+    <Stack          ID="Top" StackGrowth="Down" >
+      <GridButton   ID="Header" Style="ButtonExpand" String="Districts" Size="325,32"/>
+      <GridButton   ID="HeaderOn" Style="ButtonExpandSelected" String="Districts" Size="325,32" Hidden="1"/>
+      <SlideAnim    ID="ListSlide" Speed="3.5" Begin="0,-10" End="0,0" Cycle="Once" Size="400,auto">
+        <AlphaAnim  ID="ListAlpha" Speed="4" AlphaBegin="0" AlphaEnd="1" Cycle="Once" Size="default,auto">
+          <Stack    ID="List" StackGrowth="Down"  Offset="5,0" Padding="2"/>
+        </AlphaAnim>
+      </SlideAnim>
+      <Grid Style="Drawer" Size="325,6" Offset="4,-1" />
+    </Stack>
+  </Instance>
+
+  <Instance Name="QueueListInstance">
+      <Container ID="Root" Size="255,auto">
+          <Container ID="ButtonContainer" Size="parent,32" Anchor="R,B">
+              <Drag ID="Draggable" Size="parent,parent" Buttons="L" SnapBackSpeed="4" RestrictY="1">
+                  <GridButton ID="DraggableButton" Size="parent,32" Style="RowButton" Anchor="R,B">
+                      <Grid ID="Active" Style="Civilopedia_PageTabHeaderOverlay" Size="parent,parent+1" Hidden="1" />
+                      <Container Size="32,32">
+                          <Image ID="Icon" Size="28,28" Texture="Wonders38" Anchor="C,C" ConsumeMouse="0" />
+                      </Container>
+                      <Container Size="parent-65,parent-15" Anchor="R,C" Offset="32,0">
+                          <Label ID="LabelText" WrapWidth="160" String="?Industrial Zone" Style="WhiteSemiBold12" Anchor="L,C" />
+                      </Container>
+                      <Stack Anchor="R,C" StackGrowth="Left" Padding="0">
+                          <Grid ID="RecommendedIcon" SliceTextureSize="36,30" SliceCorner="22,15" Size="36,30" Hidden="1" Texture="Controls_AdvisorRecBacking" ToolTip="LOC_HUD_UNIT_PANEL_RECOMMENDED" Anchor="R,T">
+                              <Image Texture="AdvisorRec22" Size="22,22" Anchor="R,T" Offset="2,4">
+                                  <FlipAnim Texture="AdvisorRecAnim22" Size="26,26" Anchor="C,C" FrameCount="12" Columns="4" Speed="14" EndPause="3" Color="255,255,255,200" />
+                              </Image>
+                          </Grid>
+                          <Container Size="71,21" Anchor="R,C" Offset="3,0">
+                              <Image ID="ProductionProgressArea" Texture="CityPanel_MeterSmallBacking" Size="71,21" Anchor="R,C">
+                                  <TextureBar ID="ProductionProgress" Texture="CityPanel_ProductionMeterSmall" Size="67,17" Anchor="C,C" Speed="1" Direction="Right" />
+                              </Image>
+                              <Label ID="CostText" String="? Turns" Style="WhiteSemiBold12" Anchor="R,C" Offset="3,0" />
+                          </Container>
+                      </Stack>
+                      <Container ID="Disabled" Size="parent,parent" Hidden="1" ConsumeMouse="1">
+                          <GridButton Size="parent,parent" Style="ProductionButtonNest" Color="200,200,200,150" Disabled="1" />
+                      </Container>
+                  </GridButton>
+              </Drag>
+              <Button ID="Button" Size="parent,parent" Alpha="0" ConsumeMouse="0" />
+          </Container>
+      </Container>
+  </Instance>
+
+  <Instance           Name="BuildingListInstance">
+    <Container            ID="Root" Size="320,auto">
+      <Container          ID="ButtonContainer"  Size="parent,32" Anchor="R,B">
+        <GridButton       ID="Button"           Size="parent,parent"              Style="ProductionButtonNest" Anchor="R,B">
+          <Container      ID="Disabled"         Size="parent,parent" Hidden="1"  ConsumeMouse="1">
+            <GridButton                         Size="parent,parent"              Style="ProductionButtonNest" Color="200,200,200,150" Disabled="1"/>
+          </Container>
+          <Stack StackGrowth="Right" Anchor="L,C" Offset="10,0" Padding="10">
+            <Image        ID="Icon"             Size="32,32" Texture="Wonders32" Anchor="C,C" ConsumeMouse="0"/>
+            <Container Size="71,21" Anchor="C,C" Offset="0,0">
+              <Image ID="ProductionProgressArea" Texture="CityPanel_MeterSmallBacking" Size="120,21">
+                <TextureBar ID="ProductionProgress" Texture="CityPanel_ProductionMeterSmall" Size="112,17" Anchor="C,C" Speed="1" Direction="Right"/>
+              </Image>
+              <Label        ID="LabelText"        WrapWidth="150" String="?Industrial Zone" Style="WhiteSemiBold14"  Anchor="L,C" Offset="10,0"/>
+            </Container>
+          </Stack>
+          <Stack Anchor="R,C" StackGrowth="Left" Padding="-3">
+            <Grid               ID="RecommendedIcon" SliceTextureSize="36,30" SliceCorner="22,15" Size="36,30" Hidden="1" Texture="Controls_AdvisorRecBacking" ToolTip="LOC_HUD_UNIT_PANEL_RECOMMENDED" Anchor="R,T">
+              <Image            Texture="AdvisorRec22"      Size="22,22" Anchor="R,T" Offset="2,4">
+                <FlipAnim       Texture="AdvisorRecAnim22"  Size="26,26" Anchor="C,C" FrameCount="12" Columns="4" Speed="14" EndPause="3" Color="255,255,255,200"/>
+              </Image>
+            </Grid>
+            <Label        ID="CostText"         String="? Turns" Style="WhiteSemiBold14" Anchor="R,C" Offset="8,0"/>
+            <GridButton ID="PurchaseButton" Size="62,parent-9" Style="PanelButtonLightweight" Anchor="R,C"/>
+            <GridButton ID="FaithPurchaseButton" Size="62,parent-9" Style="PanelButtonLightweight" Anchor="R,C"/>
+          </Stack>
+        </GridButton>
+      </Container>
+    </Container>
+  </Instance>
+
+  <Instance           Name="DistrictListInstance">
+    <Container        ID="Root"                                           Size="320,auto">
+      <Grid           ID="BuildingDrawer"                       Offset="0,32" Size="parent,auto"  Texture="ProductionPanel_ExtendSlot" SliceCorner="14,6" SliceTextureSize="28,16" AutoSizePadding="0,3" Hidden="1">
+        <Stack        ID="BuildingStack"      Anchor="C,T"  Offset="0,3"/>
+      </Grid>
+      <Container      ID="ButtonContainer" Size="parent, 32">
+        <GridButton     ID="Button" Size="parent,33" Style="ProductionButton"  Anchor="R,B">
+          <Container    ID="Disabled" Size="parent,parent"  Hidden="1"  ConsumeMouse="1">
+            <GridButton Size="parent,parent"  Style="ProductionButton" Color="200,200,200,150" Disabled="1"/>
+          </Container>
+          <Container    ID="CompletedArea"                                  Size="320,parent + 6" Hidden="1" Offset="0,-1">
+            <Grid     Size="parent,parent+6"  Texture="ProductionPanel_ChooserButton" SliceStart="0,192" SliceTextureSize="102,parent + 6" SliceCorner="51,25"/>
+            <Image    Size="parent-18,34" Texture="ProductionPanel_ChooserButtonTile" StretchMode="Fill" Anchor="C,T" Offset="0,1"/>
+          </Container>
+          <Image ID="Icon" Anchor="L,C" Size="32,32" Offset="6,0" ConsumeMouse="0"/>
+          <Container                            Anchor="R,C"  Offset="10,0" Size="255,38" >
+            <Label      ID="LabelText"          Anchor="L,C"                                      Style="WhiteSemiBold14" String="Industrial Zone" WrapWidth="260" />
+          </Container>
+          <Stack Anchor="R,C" StackGrowth="Left" Padding="0">
+            <Grid               ID="RecommendedIcon" SliceTextureSize="36,30" SliceCorner="22,15" Size="36,30" Hidden="1" Texture="Controls_AdvisorRecBacking" ToolTip="LOC_HUD_UNIT_PANEL_RECOMMENDED" Anchor="R,T">
+              <Image            Texture="AdvisorRec22"      Size="22,22" Anchor="R,T" Offset="2,4">
+                <FlipAnim       Texture="AdvisorRecAnim22"  Size="26,26" Anchor="C,C" FrameCount="12" Columns="4" Speed="14" EndPause="3" Color="255,255,255,200"/>
+              </Image>
+            </Grid>
+            <Container Size="71,21" Anchor="R,C" Offset="3,0">
+              <Image        ID="ProductionProgressArea" Texture="CityPanel_MeterSmallBacking" Size="71,21" Anchor="R,C" Offset="10,0">
+                <TextureBar ID="ProductionProgress" Texture="CityPanel_ProductionMeterSmall" Size="67,17" Anchor="C,C" Speed="1" Direction="Right"/>
+              </Image>
+              <Stack Anchor="R,C" StackGrowth="Left" Offset="3,0" Padding="3">
+                <Label        ID="CostText"         String="? Turns" Style="WhiteSemiBold14" Anchor="R,C" Offset="5,0"/>
+                <GridButton ID="PurchaseButton" Size="62,parent-9" Style="PanelButtonLightweight" Anchor="R,C"/>
+                <GridButton ID="FaithPurchaseButton" Size="62,parent-9" Style="PanelButtonLightweight" Anchor="R,C"/>
+              </Stack>
+            </Container>
+          </Stack>
+        </GridButton>
+      </Container>
+    </Container>
+  </Instance>
+
+  <Instance           Name="CivilianListInstance">
+    <Container        ID="Root"       Size="320,auto">
+      <Container      ID="ButtonContainer" Size="parent, 32">
+        <GridButton     ID="TrainUnit"                Size="320,parent"             Style="ProductionButton" Anchor="R,B">
+          <Container      ID="Disabled"           Size="parent,parent" Hidden="1"  ConsumeMouse="1">
+            <GridButton                           Size="parent,parent" Style="ProductionButton" Color="200,200,200,150" Disabled="1"/>
+          </Container>
+          <Container Size="64,32" Anchor="L,C" Offset="-10,0">
+            <Image ID="Icon" Size="32,32" Texture="Units32" Anchor="C,C" ConsumeMouse="0"/>
+          </Container>
+          <Container                              Size="parent-65,parent-15" Anchor="L,C" Offset="50,0">
+            <Container Size="71,21" Anchor="L,C" Offset="-10,0">
+              <Image        ID="ProductionProgressArea" Texture="CityPanel_MeterSmallBacking" Size="115,21" Anchor="L,C">
+                <TextureBar ID="ProductionProgress" Texture="CityPanel_ProductionMeterSmall" Size="107,17" Anchor="C,C" Speed="1" Direction="Right"/>
+              </Image>
+            </Container>
+            <Stack Anchor="L,C" StackGrowth="Left" StackPadding="5">
+              <Label        ID="LabelText"          WrapWidth="120" String="Industrial Zone" Style="WhiteSemiBold14"  Anchor="L,C"/>
+              <Image ID="ReligionIcon" Size="22,22" IconSize="22" Icon="ICON_RELIGION_ISLAM"/>
+            </Stack>
+          </Container>
+          <Stack Anchor="R,C" StackGrowth="Left" Padding="0">
+            <Grid               ID="RecommendedIcon" SliceTextureSize="36,30" SliceCorner="22,15" Size="36,30" Hidden="1" Texture="Controls_AdvisorRecBacking" ToolTip="LOC_HUD_UNIT_PANEL_RECOMMENDED" Anchor="R,T">
+              <Image            Texture="AdvisorRec22"      Size="22,22" Anchor="R,T" Offset="2,4">
+                <FlipAnim       Texture="AdvisorRecAnim22"  Size="26,26" Anchor="C,C" FrameCount="12" Columns="4" Speed="14" EndPause="3" Color="255,255,255,200"/>
+              </Image>
+            </Grid>
+            <Stack Anchor="R,C" StackGrowth="Left" Offset="3,0" Padding="3">
+              <Label ID="CostText" String="? Turns" Style="WhiteSemiBold14" Anchor="R,C" Offset="5,0"/>
+              <GridButton ID="PurchaseButton" Size="62,parent-9" Style="PanelButtonLightweight" Anchor="R,C"/>
+              <GridButton ID="FaithPurchaseButton" Size="62,parent-9" Style="PanelButtonLightweight" Anchor="R,C"/>
+            </Stack>
+          </Stack>
+        </GridButton>
+      </Container>
+    </Container>
+  </Instance>
+
+
+  <Instance           Name="UnitListInstance">
+    <Container        ID="Root"       Size="320,auto">
+      <!--Corps and Army Buttons-->
+      <Grid                 ID="ArmyCorpsDrawer" Offset="0,30"  Size="parent,auto"      Texture="ProductionPanel_ExtendSlot" SliceCorner="14,6" SliceTextureSize="28,16" AutoSizePadding="0,3" Hidden="1">
+        <Stack              ID="ArmyCorpsStack"     Anchor="C,T"  Offset="0,3">
+          <!-- Corps Button-->
+          <Container      ID="CorpsButtonContainer" Size="305, 32" Hidden="1">
+            <GridButton       ID="TrainCorpsButton"             Size="305,parent"             Style="ProductionButtonNest" Anchor="C,B">
+              <Image        ID="ProductionCorpsProgressArea" Texture="CityPanel_MeterSmallBacking" Size="71,21"  Offset="10,0" Anchor="L,C">
+                <TextureBar ID="ProductionCorpsProgress" Texture="CityPanel_ProductionMeterSmall" Size="67,17" Anchor="C,C" Speed="1" Direction="Right"/>
+              </Image>
+              <Label ID="CorpsLabelIcon" String="([ICON_Corps]Corps)" Style="WhiteSemiBold14"  Anchor="L,C" Offset="10,0" Color0="217,180,119"/>
+              <Stack Anchor="R,C" StackGrowth="Left" Padding="0">
+                <Grid               ID="CorpsRecommendedIcon" SliceTextureSize="36,30" SliceCorner="22,15" Size="36,30" Hidden="1" Texture="Controls_AdvisorRecBacking" ToolTip="LOC_HUD_UNIT_PANEL_RECOMMENDED" Anchor="R,T">
+                  <Image            Texture="AdvisorRec22"      Size="22,22" Anchor="R,T" Offset="2,4">
+                    <FlipAnim       Texture="AdvisorRecAnim22"  Size="26,26" Anchor="C,C" FrameCount="12" Columns="4" Speed="14" EndPause="3" Color="255,255,255,200"/>
+                  </Image>
+                </Grid>
+                <Container Size="71,21" Anchor="R,C" Offset="3,0">
+                  <Stack Anchor="R,C" StackGrowth="Left" Offset="5,0" Padding="3">
+                    <Label ID="CorpsCostText" String="? Turns" Style="WhiteSemiBold14" Anchor="R,C" Offset="5,0"/>
+                    <GridButton ID="CorpsPurchaseButton" Size="70,21" Style="PanelButtonLightweight" Anchor="R,C"/>
+                    <GridButton ID="CorpsFaithPurchaseButton" Size="70,21" Style="PanelButtonLightweight" Anchor="R,C"/>
+                  </Stack>
+                </Container>
+              </Stack>
+              <Container      ID="CorpsDisabled"          Size="parent,parent" Hidden="1"  ConsumeMouse="1">
+                <GridButton                         Size="parent,parent"              Style="ProductionButtonNest" Color="200,200,200,150" Disabled="1"/>
+              </Container>
+            </GridButton>
+          </Container>
+          <!-- Army Button -->
+          <Container      ID="ArmyButtonContainer" Size="305, 32" Hidden="1">
+            <GridButton       ID="TrainArmyButton"              Size="305,parent"             Style="ProductionButtonNest" Anchor="C,B">
+              <Image        ID="ProductionArmyProgressArea" Texture="CityPanel_MeterSmallBacking" Size="71,21" Offset="10,0" Anchor="L,C">
+                <TextureBar ID="ProductionArmyProgress" Texture="CityPanel_ProductionMeterSmall" Size="67,17" Anchor="C,C" Speed="1" Direction="Right"/>
+              </Image>
+              <Label        ID="ArmyLabelIcon" String="([ICON_Army]Army)" Style="WhiteSemiBold14"  Anchor="L,C" Offset="10,0" Color0="217,180,119"/>
+              <Stack Anchor="R,C" StackGrowth="Left" Padding="0">
+                <Grid               ID="ArmyRecommendedIcon" SliceTextureSize="36,30" SliceCorner="22,15" Size="36,30" Hidden="1" Texture="Controls_AdvisorRecBacking" ToolTip="LOC_HUD_UNIT_PANEL_RECOMMENDED" Anchor="R,T">
+                  <Image            Texture="AdvisorRec22"      Size="22,22" Anchor="R,T" Offset="2,4">
+                    <FlipAnim       Texture="AdvisorRecAnim22"  Size="26,26" Anchor="C,C" FrameCount="12" Columns="4" Speed="14" EndPause="3" Color="255,255,255,200"/>
+                  </Image>
+                </Grid>
+                <Container Size="71,21" Anchor="R,C" Offset="3,0">
+                  <Stack Anchor="R,C" StackGrowth="Left" Offset="5,0" Padding="3">
+                    <Label ID="ArmyCostText" String="? Turns" Style="WhiteSemiBold14" Anchor="R,C" Offset="5,0"/>
+                    <GridButton ID="ArmyPurchaseButton" Size="70,21" Style="PanelButtonLightweight" Anchor="R,C"/>
+                    <GridButton ID="ArmyFaithPurchaseButton" Size="70,21" Style="PanelButtonLightweight" Anchor="R,C"/>
+                  </Stack>
+                </Container>
+              </Stack>
+              <Container      ID="ArmyDisabled"         Size="parent,parent" Hidden="1" ConsumeMouse="1" >
+                <GridButton                         Size="parent,parent"              Style="ProductionButtonNest" Color="200,200,200,150" Disabled="1"/>
+              </Container>
+            </GridButton>
+          </Container>
+        </Stack>
+      </Grid>
+
+      <Container      ID="ButtonContainer" Size="parent, 32">
+        <GridButton     ID="TrainUnit"  Size="320,parent"             Style="ProductionButton"  Anchor="R,B">
+      <Container      ID="Disabled"           Size="parent,parent" Hidden="1"  ConsumeMouse="1">
+            <GridButton                           Size="parent,parent" Style="ProductionButton" Color="200,200,200,150" Disabled="1"/>
+          </Container>
+          <Container                    Size="64,32" Anchor="L,C" Offset="-10,-2">
+            <Image ID="Icon" Offset="0, 2" Size="32,32" Texture="Units32" Anchor="C,C" ConsumeMouse="0"/>
+          </Container>
+          <Stack StackGrowth="Left" Anchor="R,C" Offset="0,0">
+            <Container ID="CorpsArmyDropdownArea" Size="30,55" Hidden="1">
+              <Box Color="22,27,29,200" Size="1,parent" Anchor="L,C"/>
+            </Container>
+            <Stack Anchor="R,C" StackGrowth="Left" Padding="0">
+              <Grid               ID="RecommendedIcon" SliceTextureSize="36,30" SliceCorner="22,15" Size="36,30" Hidden="1" Texture="Controls_AdvisorRecBacking" ToolTip="LOC_HUD_UNIT_PANEL_RECOMMENDED" Anchor="R,T">
+                <Image            Texture="AdvisorRec22"      Size="22,22" Anchor="R,T" Offset="2,4">
+                  <FlipAnim       Texture="AdvisorRecAnim22"  Size="26,26" Anchor="C,C" FrameCount="12" Columns="4" Speed="14" EndPause="3" Color="255,255,255,200"/>
+                </Image>
+              </Grid>
+            </Stack>
+          </Stack>
+          <Container Size="71,21" Anchor="L,C" Offset="50,0">
+            <Image        ID="ProductionProgressArea" Texture="CityPanel_MeterSmallBacking" Size="100,21" Anchor="L,C" Offset="-10,0">
+              <TextureBar ID="ProductionProgress" Texture="CityPanel_ProductionMeterSmall" Size="92,17" Anchor="C,C" Speed="1" Direction="Right"/>
+            </Image>
+            <Label        ID="LabelText"           WrapWidth="100" String="Industrial Zone" Style="WhiteSemiBold14" Anchor="L,C"/>
+            <Image ID="ReligionIcon" Size="22,22" IconSize="22" Icon="ICON_RELIGION_ISLAM"/>
+          </Container>
+          <Stack Anchor="R,C" StackGrowth="Left" Offset="3,0" Padding="2">
+            <Label ID="CostText" String="? Turns" Style="WhiteSemiBold14" Anchor="R,C" Offset="5,0"/>
+            <GridButton ID="PurchaseButton" Size="62,parent-9" Style="PanelButtonLightweight" Anchor="R,C"/>
+            <GridButton ID="FaithPurchaseButton" Size="62,parent-9" Style="PanelButtonLightweight" Anchor="R,C"/>
+            <BoxButton ID="CorpsArmyDropdownButton" Size="16,parent-9" Color="0,0,0,0" Hidden="1">
+              <Button   ID="CorpsArmyArrow" Texture="Controls_ButtonExtendSmall" Size="16,16" StateOffsetIncrement="0,16" Anchor="C,C" ConsumeMouse="0"/>
+            </BoxButton>
+          </Stack>
+        </GridButton>
+      </Container>
+    </Container>
+  </Instance>
+  <Instance       Name="ProjectListInstance">
+    <Container      ID="Root" Size="auto,auto">
+      <Container      ID="ButtonContainer" Size="auto, 32">
+        <GridButton ID="Button"            Size="320,parent"              Style="ProductionButton" >
+          <Container Size="parent,parent" Hidden="1" ID="Disabled" ConsumeMouse="1">
+            <GridButton Size="parent,parent"              Style="ProductionButton" Color="200,200,200,150" Disabled="1"/>
+          </Container>
+          <Container Anchor="L,C" Size="40,32">
+            <Image        ID="Icon"             Size="32,32" Texture="Projects32" Anchor="C,C" ConsumeMouse="0"/>
+          </Container>
+          <Container Size="parent-65,parent-15" Anchor="R,C" Offset="10,0">
+            <Label String="Industrial Zone" Style="WhiteSemiBold14"  ID="LabelText" Anchor="L,C" WrapWidth="180" />
+          </Container>
+          <Stack Anchor="R,C" StackGrowth="Left" Padding="0">
+            <Grid               ID="RecommendedIcon" SliceTextureSize="36,30" SliceCorner="22,15" Size="36,30" Hidden="1" Texture="Controls_AdvisorRecBacking" ToolTip="LOC_HUD_UNIT_PANEL_RECOMMENDED" Anchor="R,T">
+              <Image            Texture="AdvisorRec22"      Size="22,22" Anchor="R,T" Offset="2,4">
+                <FlipAnim       Texture="AdvisorRecAnim22"  Size="26,26" Anchor="C,C" FrameCount="12" Columns="4" Speed="14" EndPause="3" Color="255,255,255,200"/>
+              </Image>
+            </Grid>
+            <Container Size="71,21" Anchor="R,C" Offset="3,0">
+              <Image        ID="ProductionProgressArea" Texture="CityPanel_MeterSmallBacking" Size="71,21" Anchor="R,C">
+                <TextureBar ID="ProductionProgress" Texture="CityPanel_ProductionMeterSmall" Size="67,17" Anchor="C,C" Speed="1" Direction="Right"/>
+              </Image>
+              <Label        ID="CostText"         String="? Turns" Style="WhiteSemiBold14" Anchor="R,C" Offset="5,0"/>
+            </Container>
+          </Stack>
+        </GridButton>
+      </Container>
+    </Container>
+  </Instance>
+
+</Context>
